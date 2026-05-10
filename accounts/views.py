@@ -3,6 +3,12 @@ from .forms import CustomUserCreationForm
 from django.http import HttpResponse
 
 
+def home_view(request):
+
+    return render(
+        request,
+        'home.html'
+    )
 def signup_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
