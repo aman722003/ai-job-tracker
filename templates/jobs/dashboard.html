@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard</title>
+
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5">
+
+        <h1 class="mb-4 text-center">
+            AI Job Tracker Dashboard
+        </h1>
+
+        <!-- Search + Filter -->
+
+        <form method="GET" class="row g-3 mb-4">
+
+            <div class="col-md-5">
+
+                <input
+
+                    type="text"
+
+                    name="search"
+
+                    class="form-control"
+
+                    placeholder="Search company or role"
+                >
+
+            </div>
+
+            <div class="col-md-4">
+
+                <select
+                    name="status"
+                    class="form-select"
+                >
+
+                    <option value="">
+                        All Status
+                    </option>
+
+                    <option value="Applied">
+                        Applied
+                    </option>
+
+                    <option value="Interview">
+                        Interview
+                    </option>
+
+                    <option value="Rejected">
+                        Rejected
+                    </option>
+
+                    <option value="Offer">
+                        Offer
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary w-100"
+                >
+                    Search
+                </button>
+
+            </div>
+
+        </form>
+
+        <!-- Add Job Button -->
+
+        <a
+        href="/jobs/create/"
+        class="btn btn-success mb-4"
+        >
+            Add New Job
+        </a>
+
+        <!-- Analytics Cards -->
+
+        <div class="row mb-5">
+
+            <div class="col-md-3">
+
+                <div class="card text-center p-3 shadow-sm">
+
+                    <h5>Total</h5>
+
+                    <h2>{{ total_jobs }}</h2>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="card text-center p-3 shadow-sm">
+
+                    <h5>Applied</h5>
+
+                    <h2>{{ applied_count }}</h2>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="card text-center p-3 shadow-sm">
+
+                    <h5>Interview</h5>
+
+                    <h2>{{ interview_count }}</h2>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="card text-center p-3 shadow-sm">
+
+                    <h5>Offers</h5>
+
+                    <h2>{{ offer_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Chart -->
+
+        <div class="card p-4 mb-5 shadow-sm">
+
+            <h3 class="mb-4">
+                Application Analytics
+            </h3>
+
+            <canvas
+                id="jobChart"
+                width="400"
+                height="120"
+            ></canvas>
+
+        </div>
+
+        <script>
+
+            const ctx = document.getElementById('jobChart');
+
+            new Chart(ctx, {
+
+                type: 'bar',
+
+                data: {
+
+                    labels: [
+
+                        'Applied',
+
+                        'Interview',
+
+                        'Rejected',
+
+                        'Offer'
+                    ],
+
+                    datasets: [{
+
+                        label: 'Job Applications',
+
+                        data: [
+
+                            {{ applied_count }},
+
+                            {{ interview_count }},
+
+                            {{ rejected_count }},
+
+                            {{ offer_count }}
+                        ],
+
+                        borderWidth: 1
+                    }]
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+        </script>
+
+        <!-- Job Applications -->
+
+        <h2 class="mb-4">
+            My Applications
+        </h2>
+
+        {% for job in jobs %}
+
+            <div class="card mb-4 p-4 shadow-sm">
+
+                <h3>{{ job.company_name }}</h3>
+
+                <p>
+
+                    <strong>Role:</strong>
+
+                    {{ job.role }}
+
+                </p>
+
+                <p>
+
+                    <strong>Status:</strong>
+
+                    {{ job.status }}
+
+                </p>
+
+                <p>
+
+                    <strong>Salary:</strong>
+
+                    {{ job.salary }}
+
+                </p>
+
+                <p>
+
+                    <strong>Notes:</strong>
+
+                    {{ job.notes }}
+
+                </p>
+
+                <p>
+
+                    <strong>Extracted Skills:</strong>
+
+                    {{ job.extracted_skills }}
+
+                </p>
+
+                {% if job.resume %}
+
+                    <a
+                    href="{{ job.resume.url }}"
+                    class="btn btn-secondary mb-3"
+                    >
+                        View Resume
+                    </a>
+
+                {% endif %}
+
+                <div>
+
+                    <a
+                    href="/jobs/edit/{{ job.id }}/"
+                    class="btn btn-warning"
+                    >
+                        Edit
+                    </a>
+
+                    <a
+                    href="/jobs/delete/{{ job.id }}/"
+                    class="btn btn-danger"
+                    >
+                        Delete
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="alert alert-info">
+
+                No job applications found.
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</body>
+
+</html>
