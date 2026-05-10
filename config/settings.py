@@ -77,12 +77,34 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
+if os.environ.get('DATABASE_URL'):
 
-    'default': dj_database_url.parse(
-        os.environ.get('DATABASE_URL')
-    )
-}
+    DATABASES = {
+
+        'default': dj_database_url.parse(
+            os.environ.get('DATABASE_URL')
+        )
+    }
+
+else:
+
+    DATABASES = {
+
+        'default': {
+
+            'ENGINE': 'django.db.backends.postgresql',
+
+            'NAME': 'ai_job_tracker_db',
+
+            'USER': 'postgres',
+
+            'PASSWORD': 'Aman@123',
+
+            'HOST': 'localhost',
+
+            'PORT': '5432',
+        }
+    }
 
 
 # Password validation
