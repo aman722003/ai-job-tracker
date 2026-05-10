@@ -30,8 +30,3 @@ def test_csrf(request):
         request,
         "accounts/test.html"
     )
-def home_view(request):
-
-    return HttpResponse(
-        "AI Job Tracker Home Page"
-    )
